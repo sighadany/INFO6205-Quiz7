@@ -19,14 +19,31 @@ public class KeyIndexedSort {
 
         // Student TODO:
         // 1. Compute frequency counts
+        for(int i = 0; i < n; i++) {
+            if(charAt(a[i], d) != -1 ) {
+                count[charAt(a[i], d)]++;
+            } else {
+                count[R+1]++;
+            }
+        }
        
         // 2. Transform counts to indices
+        int pos = 0;
+
+        for(int i = 0; i < R+1; i++) {
+            for(int j = 0; j < n; i++) {
+                if( charAt(a[i], d) != -1 ) {
+                    if( charAt(a[j], d) == a[j].charAt(d) ) {
+                        aux[pos++] = a[j];
+                    }
+                }
+            }
+        }
        
         // 3. Distribute to auxiliary array
         
         // 4. Copy back to original array
-
-
+        System.arraycopy(aux, 0, a, 0, n);
     }
 
     // Get d-th character or -1 if out of bounds
