@@ -15,35 +15,34 @@ public class KeyIndexedSort {
         if (n <= 1) return;
 
         String[] aux = new String[n];
-        int[] count = new int[R + 2];  // +2 to handle -1 (end-of-string)
+        int[] count = new int[R + 1];  // Only need R+1 for characters 0 to R-1
 
-        // Student TODO:
-        // 1. Compute frequency counts
-        for(int i = 0; i < n; i++) {
-            if(charAt(a[i], d) != -1 ) {
-                count[charAt(a[i], d)]++;
-            } else {
-                count[R+1]++;
-            }
+        // Step 1: Count frequencies of each character at position d
+        for (int i = 0; i < n; i++) {
+            int c = charAt(a[i], d);
+            // Map -1 (end of string) to 0, and shift other characters by 1
+            c = c + 1;
+            count[c]++;
         }
-       
-        // 2. Transform counts to indices
-        int pos = 0;
 
-        for(int i = 0; i < R+1; i++) {
-            for(int j = 0; j < n; i++) {
-                if( charAt(a[i], d) != -1 ) {
-                    if( charAt(a[j], d) == a[j].charAt(d) ) {
-                        aux[pos++] = a[j];
-                    }
-                }
-            }
+        // Step 2: Compute cumulative counts (transform into indices)
+        for (int r = 0; r < R; r++) {
+            count[r + 1] += count[r];
         }
-       
-        // 3. Distribute to auxiliary array
-        
-        // 4. Copy back to original array
-        System.arraycopy(aux, 0, a, 0, n);
+
+        // Step 3: Move items to auxiliary array in stable manner
+        for (int i = 0; i < n; i++) {
+            int c = charAt(a[i], d);
+            // Map -1 (end of string) to 0, and shift other characters by 1
+            c = c + 1;
+            aux[count[c - 1]] = a[i];  // Use the index from count, then increment
+            count[c - 1]++;
+        }
+
+        // Step 4: Copy back to original array
+        for (int i = 0; i < n; i++) {
+            a[i] = aux[i];
+        }
     }
 
     // Get d-th character or -1 if out of bounds
@@ -69,14 +68,15 @@ public class KeyIndexedSort {
     // Example usage
     public static void main(String[] args) {
         String[] words = {"apple", "banana", "kiwi", "grape", "pear"};
-        
+
         // Sort by 2nd character (index 1)
         sortByPosition(words, 1);
-        
+
+        System.out.println("Sorted by second character:");
         for (String word : words) {
             System.out.println(word);
         }
-        
+
         System.out.println("Sorted correctly: " + isSorted(words, 1));
     }
 }
